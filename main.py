@@ -21,7 +21,12 @@ def main():
     here = Path(__file__).resolve().parent
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output")
     out_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(here / "entry.png", out_dir / "entry.png")
+    src = here / "entry.png"
+    dst = out_dir / "entry.png"
+    shutil.copyfile(src, dst)
+    # Guard the gate's byte-identical rule: the copy must match the source.
+    if dst.stat().st_size != src.stat().st_size:
+        raise SystemExit("entry.png copy size mismatch")
 
 
 if __name__ == "__main__":
